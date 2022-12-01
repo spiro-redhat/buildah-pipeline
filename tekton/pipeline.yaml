@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1 
 kind: Pipeline
 metaData:
-  name: maven-image
+  name: buildah-pipeline
 spec: 
     workspaces:
       - name: pipeline-cache
