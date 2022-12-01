@@ -17,7 +17,7 @@ spec:
        default: source
      - name: IMAGE_REPO
        type: string
-       default: image-registry.openshift-image-registry.svc:5000
+       default: quay.io
      - name: IMAGE_NAME
        type: string
        default: maven
