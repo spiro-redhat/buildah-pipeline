@@ -1,0 +1,26 @@
+# https://redhat-scholars.github.io/tekton-tutorial/tekton-tutorial/workspaces.html
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: buildah-pipeline-pr- 
+  labels:
+    app: maven
+spec:
+
+  pipelineRef:
+    name: maven-image
+  params: 
+    - name: IMAGE_TAG
+      value: jdk11
+    - name: DOCKER_FILE
+      value: ./docker/Dockerfile-jdk11
+  workspaces:
+    - name: pipeline-cache 
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 100Mi
+   
