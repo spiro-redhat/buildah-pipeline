@@ -15,12 +15,14 @@ spec:
   params: 
     - name: GIT_SUBDIRECTORY
       value: ""
+    - name: IMAGE_REPO
+      value: image-registry.openshift-image-registry.svc:5000
     - name: IMAGE_NAME
       value: maven-spi
     - name: IMAGE_TAG
-      value: jdk11
+      value: jdk8
     - name: DOCKERFILE
-      value: ./docker/Dockerfile-jdk11
+      value: ./docker/Dockerfile-jdk8
   workspaces:
     - name: pipeline-cache 
       volumeClaimTemplate:
