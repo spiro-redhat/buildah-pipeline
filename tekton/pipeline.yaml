@@ -1,0 +1,59 @@
+apiVersion: tekton.dev/v1beta1 
+kind: Pipeline
+metaData:
+  name: maven-image
+spec: 
+    workspaces:
+      - name: pipeline-cache
+    params:
+     - name: GIT_URL
+       type: string
+       default:  https://github.com/spiro-redhat/buildah-pipeline.git
+     - name: GIT_REVISION
+       type: string
+       default: main
+     - name: IMAGE_NAME
+       type: string
+       default: maven
+     - name: IMAGE_TAG
+       type: string
+       default: jdk11
+     - name: DOCKER_FILE
+       type: string 
+       default: Dockerfile
+     - name: NAMESPACE
+       type: string
+       default: $(context.pipelineRun.namespace)
+    tasks:
+      - name: git-clone
+        taskRef:
+          kind: Task
+          name: git-clone
+        workspaces:
+          - name: output
+            workspace: pipeline-cache
+        params:
+          - name: url
+            value: $(params.GIT_URL) 
+          - name: revision
+            value: $(params.GIT_REVISION)  
+          - name: sslVerify
+            value: "false"
+      - name: buildah-image
+        taskRef:
+          name: buildah
+          kind: ClusterTask   
+        runAfter:
+          - git-clone
+        params:
+          #- name: SKIP_PUSH # if you want to skip the push 
+          #  value: 'true' 
+          - name: DOCKERFILE
+            value: "./docker/Dockerfile"
+          - name: IMAGE
+            value: 'image-registry.openshift-image-registry.svc:5000/$(params.NAMESPACE)/$(params.IMAGE_NAME):$(params.IMAGE_TAG)'
+          - name: TLSVERIFY
+            value: 'false'
+        workspaces:
+          - name: source
+            workspace: pipeline-cache 
