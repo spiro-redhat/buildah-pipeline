@@ -8,11 +8,18 @@ metadata:
 spec:
 
   pipelineRef:
-    name: maven-image
+    name: buildah-pipeline
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
   params: 
+    - name: GIT_SUBDIRECTORY
+      value: ""
+    - name: IMAGE_NAME
+      value: maven-spi
     - name: IMAGE_TAG
       value: jdk11
-    - name: DOCKER_FILE
+    - name: DOCKERFILE
       value: ./docker/Dockerfile-jdk11
   workspaces:
     - name: pipeline-cache 

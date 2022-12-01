@@ -2,5 +2,5 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 RUN microdnf --setopt=install_weak_deps=0 --setopt=tsflags=nodocs -y install gzip tar wget git java-11-openjdk findutils maven && \
     microdnf clean all && [ ! -d /var/cache/yum ] || rm -rf /var/cache/yum 
 
-COPY settings-docker.xml /usr/share/maven/conf 
+COPY docker/settings-docker.xml /usr/share/maven/conf 
 ENTRYPOINT ["/entrypoint.sh"]

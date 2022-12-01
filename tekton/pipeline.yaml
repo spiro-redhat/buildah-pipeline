@@ -8,17 +8,23 @@ spec:
     params:
      - name: GIT_URL
        type: string
-       default:  https://github.com/spiro-redhat/buildah-pipeline.git
+       default: https://github.com/spiro-redhat/buildah-pipeline.git
      - name: GIT_REVISION
        type: string
        default: main
+     - name: GIT_SUBDIRECTORY 
+       type: string
+       default: source
+     - name: IMAGE_REPO
+       type: string
+       default: image-registry.openshift-image-registry.svc:5000
      - name: IMAGE_NAME
        type: string
        default: maven
      - name: IMAGE_TAG
        type: string
        default: jdk11
-     - name: DOCKER_FILE
+     - name: DOCKERFILE
        type: string 
        default: Dockerfile
      - name: NAMESPACE
@@ -27,12 +33,14 @@ spec:
     tasks:
       - name: git-clone
         taskRef:
-          kind: Task
+          kind: ClusterTask
           name: git-clone
         workspaces:
           - name: output
             workspace: pipeline-cache
         params:
+          - name: subdirectory
+            value: $(params.GIT_SUBDIRECTORY)
           - name: url
             value: $(params.GIT_URL) 
           - name: revision
@@ -49,9 +57,9 @@ spec:
           #- name: SKIP_PUSH # if you want to skip the push 
           #  value: 'true' 
           - name: DOCKERFILE
-            value: "./docker/Dockerfile"
+            value: "$(params.DOCKERFILE)"
           - name: IMAGE
-            value: 'image-registry.openshift-image-registry.svc:5000/$(params.NAMESPACE)/$(params.IMAGE_NAME):$(params.IMAGE_TAG)'
+            value: "$(params.IMAGE_REPO)/$(params.NAMESPACE)/$(params.IMAGE_NAME):$(params.IMAGE_TAG)"
           - name: TLSVERIFY
             value: 'false'
         workspaces:
